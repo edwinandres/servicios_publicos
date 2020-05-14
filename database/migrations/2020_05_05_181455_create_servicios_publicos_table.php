@@ -21,9 +21,14 @@ class CreateServiciosPublicosTable extends Migration
 
             $table->string('felectronica')->nullable();
             $table->string('ffisica')->nullable();
+            $table->string('tipofactura')->nullable();
+            
             $table->string('nombre');
             $table->string('descripcion');
-            $table->string('tipocliente');
+            $table->string('tipocliente')->nullable();           
+
+            $table->string('fechaprueba')->nullable();
+            $table->date('fechaenvio')->nullable();
             $table->timestamps();
         });
     }

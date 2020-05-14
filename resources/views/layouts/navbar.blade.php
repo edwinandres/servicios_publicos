@@ -1,13 +1,13 @@
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-      
-      <div>
-        <ul class="nav navbar-nav">
-          <li><a href="/home">Inicio</a></li>
-          <li class="active"><a href="/servicios">Ver registros</a></li>
-          <li><a href="/servicios/create">Crear Nuevo registro</a></li>  
-        </ul>
-      </div>
-    </div>
-  </nav>
+
+  <ul class="nav justify-content-center">
+    <li class="nav-item">
+      <a class="nav-link active" href="/home">Inicio</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/servicios/index">Ver registros</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/servicios/create">Crear registro</a>
+    </li>    
+  </ul>

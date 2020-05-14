@@ -7,8 +7,12 @@ use App\ServiciosPublico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\Input;
-
-
+use App\Http\Request\ServiciosStoreRequest;
+use App\Http\Request\ServiciosUpdateRequest;
+use App\Http\Requests\ServiciosStoreRequest as RequestsServiciosStoreRequest;
+use App\Http\Requests\ServiciosUpdateRequest as RequestsServiciosUpdateRequest;
+//use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 class ServiciosPublicosController extends Controller
 {
@@ -20,7 +24,11 @@ class ServiciosPublicosController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        Carbon::setLocale('es');//muestra los mensajes en español
     }
+
+    
+
     /**
      * Display a listing of the resource.
      *
@@ -37,6 +45,7 @@ class ServiciosPublicosController extends Controller
         //$servicios = ServiciosPublico::all();
         return view('servicios.index', compact("servicios"));//compact crea un array
 
+        //$servicios = ServiciosPublico::all();
 
         /* INDAGAR SOBRE ESTE CODIGO *************************************************
         $beneficiarios = Departamento::whereHas('municipio', function($q) {
@@ -65,11 +74,37 @@ class ServiciosPublicosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    //$request son los datos que vienen desde el formulario create
+    
     public function store(Request $request)
     {
-        //        return view('insert');
+        
+        //VALIDACION DE LOS CAMPOS
+        $campos=[
+            'nombre' => 'required|string|min:2|max:15',
+            'descripcion' => 'required|string|min:2|max:30',
+            'idzona' => 'required',
+            'tipocliente' => 'required',
+            'tipofactura'=>'required',
+            'fechaenvio'=>'required|date|before:tomorrow|after:12/31/2019'
+        ];
+
+        $mensaje=[
+            "required"=>':attribute es requerido',
+            "before"=>':attribute es mayor a la permitida',
+            "after"=>':attribute es menor a la permitida',
+        ];
+        $this->validate($request,$campos,$mensaje);
+
+        //VALIDAR QUE ARRAY NO VENG VACIO
+        if(isset($request['tipofactura'])){
+            $arrayToString = implode(', ', $request->input('tipofactura'));
+        }else{
+            $arrayToString="";
+        }       
+
+        //CREAR INSTANCIA Y GUARDAR
         $servicios = new ServiciosPublico;
+        $servicios->tipofactura= $arrayToString;
 
         $servicios->idzona=$request->idzona;
         $servicios->nombre=$request->nombre;
@@ -77,11 +112,10 @@ class ServiciosPublicosController extends Controller
         $servicios->tipocliente=$request->tipocliente;
         $servicios->felectronica=$request->felectronica;
         $servicios->ffisica=$request->ffisica;
-
-        
+        $servicios->fechaenvio=$request->fechaenvio;        
         
         $servicios->save();
-        return redirect("/servicios");
+        return redirect("/servicios/index");
     }
 
     /**
@@ -121,19 +155,44 @@ class ServiciosPublicosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //        return view('update');
-       
-  
+        //VALIDACION DE LOS CAMPOS
+        $campos=[
+            'nombre' => 'required|string|min:2|max:15',
+            'descripcion' => 'required|string|min:2|max:30',
+            'idzona' => 'required',
+            'tipocliente' => 'required',
+            //'fechaprueba'=>'required|date|before:tomorrow|after:12/31/2019',
+            'fechaenvio'=>'required|date|before:tomorrow|after:12/31/2019'
+        ];
+        $mensaje=[
+            "required"=>':attribute es requerido',
+            "before"=>':attribute es mayor a la permitida',
+            "after"=>':attribute es menor a la permitida',
+        ];
+        $this->validate($request,$campos,$mensaje);
+
+        //VALIDAR QUE ARREGLO DE CHECKBOX NO VENGA VACIO
+        if(isset($request['tipofactura'])){
+            $arrayToString = implode(', ', $request->input('tipofactura'));
+        }else{
+            $arrayToString="";
+        }
+
+
+        //CREAR INSTANCIA Y ACTUALIZAR
         $servicio = ServiciosPublico::findOrFail($id);
 
+        $servicio->tipofactura= $arrayToString;
         $servicio->tipocliente = $request->tipocliente;
         $servicio->idzona = $request->idzona;
         $servicio->felectronica = $request->felectronica;
-        $servicio->ffisica = $request->ffisica;
+        $servicio->ffisica = $request->ffisica;        
+        $servicio->fechaenvio = $request->fechaenvio;        
 
         $servicio->update($request->all());
         
-        return redirect("/servicios");
+        return redirect("/servicios/index");
+        //return view('servicios.show', compact('servicio'));
     }
 
     /**
@@ -147,6 +206,6 @@ class ServiciosPublicosController extends Controller
         //   return view('delete');
         $servicio = ServiciosPublico::findOrFail($id);
         $servicio->delete();
-        return redirect("/servicios");
+        return redirect("/servicios/index");
     }
 }

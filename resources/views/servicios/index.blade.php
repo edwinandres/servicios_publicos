@@ -21,6 +21,8 @@ REGISTROS EXISTENTES
             <th>Cliente</th>
             <th>F. electronica</th>
             <th>F. fisica</th>
+            <th>Tipo Factura</th>            
+            <th>FechaEnvio</th>
         </tr>        
         
         @foreach ($servicios as $servicio)
@@ -33,6 +35,8 @@ REGISTROS EXISTENTES
                 <td>{{ $servicio->tipocliente}}</td>
                 <td>{{ $servicio->felectronica}}</td>
                 <td>{{ $servicio->ffisica}}</td>
+                <td>{{ $servicio->tipofactura }}</td>                
+                <td>{{ $servicio->fechaenvio }}</td>
                 
                 
             </tr>
