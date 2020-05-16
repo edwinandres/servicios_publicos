@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Servicio;
+//use App\ServiciosPublico;
+use App\Tarifa;
+use App\Tipofactura;
 use App\Zona;
-use App\ServiciosPublico;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\Console\Input\Input;
-use App\Http\Request\ServiciosStoreRequest;
-use App\Http\Request\ServiciosUpdateRequest;
-use App\Http\Requests\ServiciosStoreRequest as RequestsServiciosStoreRequest;
-use App\Http\Requests\ServiciosUpdateRequest as RequestsServiciosUpdateRequest;
-//use Illuminate\Support\Carbon;
-use Carbon\Carbon;
 
-class ServiciosPublicosController extends Controller
+class ServicioController extends Controller
 {
+    //
     /**
      * Create a new controller instance.
      *
@@ -27,7 +25,7 @@ class ServiciosPublicosController extends Controller
         Carbon::setLocale('es');//muestra los mensajes en español
     }
 
-    
+
 
     /**
      * Display a listing of the resource.
@@ -36,15 +34,17 @@ class ServiciosPublicosController extends Controller
      */
     public function index()
     {
-        //  
-        $servicios = DB::table('servicios_publicos')
-            ->join('zonas', 'zonas.id', '=', 'servicios_publicos.idzona')            
-            ->select('servicios_publicos.*', 'zonas.nombre as nombrezona')
+        //
+        $servicios = DB::table('servicios')
+            ->join('zonas', 'zonas.id', '=', 'servicios.idzona')
+            ->select('servicios.*', 'zonas.nombre as nombrezona')
             ->orderBy('id')
-            ->get();        
+            ->get();
 
-        //$servicios = ServiciosPublico::all();
-        return view('servicios.index', compact("servicios"));//compact crea un array
+        $tipofacturas = Tipofactura::all();
+        $tarifasData = Tarifa::all();
+
+        return view('servicios.index', compact("servicios", "tipofacturas", "tarifasData"));//compact crea un array
 
         //$servicios = ServiciosPublico::all();
 
@@ -66,7 +66,9 @@ class ServiciosPublicosController extends Controller
     {
         //
         $zonas = Zona::all();
-        return view('servicios.create', compact("zonas"));
+        $tipos = Tipofactura::all();
+        $tarifasData = Tarifa::all();
+        return view('servicios.create', compact("zonas","tipos","tarifasData"));
     }
 
     /**
@@ -75,10 +77,10 @@ class ServiciosPublicosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    
+
     public function store(Request $request)
     {
-        
+
         //VALIDACION DE LOS CAMPOS
         $campos=[
             'nombre' => 'required|string|min:2|max:15',
@@ -101,11 +103,11 @@ class ServiciosPublicosController extends Controller
             $arrayToString = implode(', ', $request->input('tipofactura'));
         }else{
             $arrayToString="";
-        }       
+        }
 
         //CREAR INSTANCIA Y GUARDAR
-        $servicios = new ServiciosPublico;
-        $servicios->tipofactura= $arrayToString;
+        $servicios = new Servicio;
+        //$servicios->tipofactura= $arrayToString;
 
         $servicios->idzona=$request->idzona;
         $servicios->nombre=$request->nombre;
@@ -113,9 +115,23 @@ class ServiciosPublicosController extends Controller
         $servicios->tipocliente=$request->tipocliente;
         $servicios->felectronica=$request->felectronica;
         $servicios->ffisica=$request->ffisica;
-        $servicios->fechaenvio=$request->fechaenvio;        
-        
+        $servicios->fechaenvio=$request->fechaenvio;
+
         $servicios->save();
+
+
+        $service= \App\Servicio::all();
+        $data = Servicio::latest('id')->first();
+
+        $servicios->save();
+
+        foreach ($request['tipofactura'] as $tipof){
+            Servicio::find($servicios->id)->tipofacturas()->attach($tipof);
+        }
+        foreach ($request['tarifasArray'] as $tarifa){
+            Servicio::find($servicios->id)->tarifas()->attach($tarifa);
+        }
+
         return redirect("/servicios/index");
     }
 
@@ -128,7 +144,7 @@ class ServiciosPublicosController extends Controller
     public function show($id)
     {
         //
-        $servicio=ServiciosPublico::findOrFail($id);
+        $servicio=Servicio::findOrFail($id);
         return view("servicios.show", compact("servicio"));
     }
 
@@ -141,10 +157,11 @@ class ServiciosPublicosController extends Controller
     public function edit($id)
     {
         //
-        
+        $tipos=Tipofactura::all();
         $zona= Zona::all();
-        $servicio=ServiciosPublico::findOrFail($id);
-        return view("servicios.edit", compact("servicio","zona"));
+        $tarifasData = Tarifa::all();
+        $servicio=Servicio::findOrFail($id);
+        return view("servicios.edit", compact("servicio","zona", "tipos","tarifasData"));
     }
 
     /**
@@ -163,7 +180,8 @@ class ServiciosPublicosController extends Controller
             'idzona' => 'required',
             'tipocliente' => 'required',
             //'fechaprueba'=>'required|date|before:tomorrow|after:12/31/2019',
-            'fechaenvio'=>'required|date|before:tomorrow|after:12/31/2019'
+            'fechaenvio'=>'required|date|before:tomorrow|after:12/31/2019',
+            'tipofactura'=>'required'
         ];
         $mensaje=[
             "required"=>':attribute es requerido',
@@ -181,17 +199,29 @@ class ServiciosPublicosController extends Controller
 
 
         //CREAR INSTANCIA Y ACTUALIZAR
-        $servicio = ServiciosPublico::findOrFail($id);
+        $servicio = Servicio::findOrFail($id);
 
-        $servicio->tipofactura= $arrayToString;
+        //$servicio->tipofactura= $arrayToString;
         $servicio->tipocliente = $request->tipocliente;
         $servicio->idzona = $request->idzona;
         $servicio->felectronica = $request->felectronica;
-        $servicio->ffisica = $request->ffisica;        
-        $servicio->fechaenvio = $request->fechaenvio;        
+        $servicio->ffisica = $request->ffisica;
+        $servicio->fechaenvio = $request->fechaenvio;
 
         $servicio->update($request->all());
-        
+
+        //BORRADO DE LOS DATOS EN PIVOT ANTES DE GUARDAR PARA NO DUPLICAR
+        Servicio::find($id)->tipofacturas()->detach();
+        Servicio::find($id)->tarifas()->detach();
+
+        //INSERCION DE DATOS EN PIVOT
+        foreach ($request['tipofactura'] as $tipof){
+            Servicio::find($id)->tipofacturas()->attach($tipof);
+        }
+        foreach ($request['tarifasArray'] as $tarifa){
+            Servicio::find($id)->tarifas()->attach($tarifa);
+        }
+
         return redirect("/servicios/index");
         //return view('servicios.show', compact('servicio'));
     }
@@ -205,7 +235,7 @@ class ServiciosPublicosController extends Controller
     public function destroy($id)
     {
         //   return view('delete');
-        $servicio = ServiciosPublico::findOrFail($id);
+        $servicio = Servicio::findOrFail($id);
         $servicio->delete();
         return redirect("/servicios/index");
     }

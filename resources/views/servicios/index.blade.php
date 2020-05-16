@@ -4,7 +4,7 @@
 REGISTROS EXISTENTES
 @endsection
 
-    
+
 @section('contenido')<!--FORMULARIO PARA VISUALIZAR LOS REGISTROS-->
 
 
@@ -19,35 +19,47 @@ REGISTROS EXISTENTES
             <th>Descripcion</th>
             <th>Zona</th>
             <th>Cliente</th>
-            <th>F. electronica</th>
-            <th>F. fisica</th>
-            <th>Tipo Factura</th>            
+            <th>Tipo Factura</th>
             <th>FechaEnvio</th>
-        </tr>        
-        
+            <th>Tarifa</th>
+        </tr>
+
         @foreach ($servicios as $servicio)
+
+            @php
+                $service= \App\Servicio::findOrfail($servicio->id);
+                //$tarifa= \App\Tarifa::findOrFail($servicio->id);
+            @endphp
             <tr>
                 <td class="icon"><a href="{{route('servicios.edit', $servicio->id)}}"><i class="far fa-edit center"></i></a></td>
                 <td>{{ $servicio->id }}</a></td>
                 <td>{{ $servicio->nombre }}</td>
-                <td>{{ $servicio->descripcion}}</td>              
+                <td>{{ $servicio->descripcion}}</td>
                 <td>{{ $servicio->nombrezona}}</td>
                 <td>{{ $servicio->tipocliente}}</td>
-                <td>{{ $servicio->felectronica}}</td>
-                <td>{{ $servicio->ffisica}}</td>
-                <td>{{ $servicio->tipofactura }}</td>                
+
+                <td>@foreach($service->tipofacturas as $tipofactura)
+                        {{$tipofactura->nombre}}
+                    @endforeach
+
+                </td>
                 <td>{{ $servicio->fechaenvio }}</td>
-                
-                
+                <td>
+                    @foreach($service->tarifas as $tarifa)
+                    {{$tarifa->nombre}}
+                    @endforeach
+                </td>
+
+
             </tr>
         @endforeach
     </table>
 
-    
+
 
 @endsection
 
 
 @section('pie')
-    
+
 @endsection

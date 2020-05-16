@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateServiciosPublicosTable extends Migration
+class CreateServiciosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateServiciosPublicosTable extends Migration
      */
     public function up()
     {
-        Schema::create('serviciospublicos', function (Blueprint $table) {
+        Schema::create('servicios', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedInteger('idzona');
@@ -40,6 +40,6 @@ class CreateServiciosPublicosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('servicios_publicos');
+        Schema::dropIfExists('servicios');
     }
 }

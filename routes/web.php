@@ -18,6 +18,18 @@ use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/', function () {
+
+
+    //$tipofactura= \App\Tipofactura::findOrFail(1);
+
+    ///return  $tipofactura->servicios;
+
+    //$servicio= \App\Servicio::findOrfail(1);
+
+    //return $servicio->tipofacturas;
+    //return $servicio;
+
+
     return view('welcome');
 });
 
@@ -27,17 +39,31 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/servicios/index', 'ServiciosPublicosController@index')->name('servicios.index');
+//Route::get('/servicios/index', 'ServiciosPublicosController@index')->name('servicios.index');
 
-Route::get('/servicios/{id}/edit', 'ServiciosPublicosController@edit')->name('servicios.edit');
+//Route::get('/servicios/{id}/edit', 'ServiciosPublicosController@edit')->name('servicios.edit');
 
-Route::get('/servicios/create', 'ServiciosPublicosController@create')->name('servicios.create');
+//Route::get('/servicios/create', 'ServiciosPublicosController@create')->name('servicios.create');
 
-Route::patch('/servicios/{id}', 'ServiciosPublicosController@update')->name('servicios.update');
+//Route::patch('/servicios/{id}', 'ServiciosPublicosController@update')->name('servicios.update');
 
-Route::post('/servicios', 'ServiciosPublicosController@store')->name('servicios.store');
+//Route::post('/servicios', 'ServiciosPublicosController@store')->name('servicios.store');
 
-Route::delete('/servicios/{id}', 'ServiciosPublicosController@destroy')->name('servicios.destroy');
+//Route::delete('/servicios/{id}', 'ServiciosPublicosController@destroy')->name('servicios.destroy');
+
+
+Route::get('/servicios/index', 'ServicioController@index')->name('servicios.index');
+
+Route::get('/servicios/{id}/edit', 'ServicioController@edit')->name('servicios.edit');
+
+Route::get('/servicios/create', 'ServicioController@create')->name('servicios.create');
+
+Route::patch('/servicios/{id}', 'ServicioController@update')->name('servicios.update');
+
+Route::post('/servicios', 'ServicioController@store')->name('servicios.store');
+
+Route::delete('/servicios/{id}', 'ServicioController@destroy')->name('servicios.destroy');
+
 
 
 

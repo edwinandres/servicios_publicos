@@ -4,8 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-
-class ServiciosPublico extends Model
+class Servicio extends Model
 {
     //
     protected $fillable=[
@@ -18,6 +17,9 @@ class ServiciosPublico extends Model
         'fechaprueba',
     ];
 
+
+
+
     public function zonas(){
         return $this->belongsTo(Zona::class);
     }
@@ -25,5 +27,10 @@ class ServiciosPublico extends Model
     public function tipofacturas()
     {
         return $this->belongsToMany(Tipofactura::class);
+    }
+
+    public function tarifas()
+    {
+        return $this->belongsToMany(Tarifa::class);
     }
 }
