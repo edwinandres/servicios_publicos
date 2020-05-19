@@ -2,6 +2,7 @@
 
 @section('cabecera')
 REGISTROS EXISTENTES
+
 @endsection
 
 
@@ -11,6 +12,7 @@ REGISTROS EXISTENTES
 
 
     <table border="1" >
+
 
         <tr>
             <th>Acciones</th>
@@ -22,12 +24,16 @@ REGISTROS EXISTENTES
             <th>Tipo Factura</th>
             <th>FechaEnvio</th>
             <th>Tarifa</th>
+            <th>Proveedor</th>
         </tr>
 
         @foreach ($servicios as $servicio)
 
+
             @php
                 $service= \App\Servicio::findOrfail($servicio->id);
+                $proveedor = ($servicio->proveedor_id);
+                //dd($proveedor)
                 //$tarifa= \App\Tarifa::findOrFail($servicio->id);
             @endphp
             <tr>
@@ -49,6 +55,15 @@ REGISTROS EXISTENTES
                     {{$tarifa->nombre}}
                     @endforeach
                 </td>
+                <td>
+                    <!--//validamos que si viene vacio se muestre vacio y no genere error-->
+                    @if($proveedor < 1)
+                        {{''}}
+                    @else
+                        {{$service->proveedor->nombre}}
+                    @endif
+                </td>
+
 
 
             </tr>

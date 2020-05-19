@@ -33,4 +33,9 @@ class Servicio extends Model
     {
         return $this->belongsToMany(Tarifa::class);
     }
+
+    public function proveedor()
+    {
+        return $this->belongsTo(Proveedor::class,'proveedor_id');
+    }
 }

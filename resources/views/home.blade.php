@@ -16,7 +16,8 @@
 
                     You are logged in!
                     <a href="/servicios/create">Nuevo registro</a>
-                    <a href="/servicios/index">Ver registros</a>
+                    <a href="/servicios/index">Ver servicios</a>
+                    <a href="/proveedores/index">Ver proveedores</a>
                 </div>
             </div>
         </div>

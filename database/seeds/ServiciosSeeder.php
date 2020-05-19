@@ -18,7 +18,8 @@ class ServiciosSeeder extends Seeder
             'idzona' => 1,
             'nombre' => 'Energia',
             'descripcion' => 'Energia electrica kw/h' ,
-            'tipocliente' => 'Persona'
+            'tipocliente' => 'Persona',
+            //'proveedor_id' => 1
 
         ]);
 
@@ -27,7 +28,8 @@ class ServiciosSeeder extends Seeder
             'idzona' => 2,
             'nombre' => 'Acueducto',
             'descripcion' => 'Agua potable para consumo',
-            'tipocliente' => 'Empresa'
+            'tipocliente' => 'Empresa',
+            'proveedor_id' => 1
         ]);
 
         //DB::table('servicios_publicos')->insert([
@@ -35,7 +37,8 @@ class ServiciosSeeder extends Seeder
             'idzona' => 3,
             'nombre' => 'Alcantarillado',
             'descripcion' => 'Manejo de aguas sucias',
-            'tipocliente' => 'Persona'
+            'tipocliente' => 'Persona',
+            'proveedor_id' => 2
         ]);
 
         //DB::table('servicios_publicos')->insert([
@@ -43,7 +46,8 @@ class ServiciosSeeder extends Seeder
             'idzona' => 4,
             'nombre' => 'Gas',
             'descripcion' => 'Red de gas hasta su hogar',
-            'tipocliente' => 'Empresa'
+            'tipocliente' => 'Empresa',
+            'proveedor_id' => 2
         ]);
 
         //DB::table('servicios_publicos')->insert([
@@ -51,7 +55,8 @@ class ServiciosSeeder extends Seeder
             'idzona' => 1,
             'nombre' => 'Telefonia fija',
             'descripcion' => 'Telefonia ilimitada',
-            'tipocliente' => 'Persona'
+            'tipocliente' => 'Persona',
+            'proveedor_id' => 1
         ]);
     }
 }

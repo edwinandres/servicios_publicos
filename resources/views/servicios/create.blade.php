@@ -6,7 +6,7 @@ INSERTAR REGISTROS
 
 
 @section('contenido')<!--FORMULARIO DE INGRESO DE REGISTROS-->
-
+<div class="card border-primary">
     <form action="/servicios" method="POST">
 
         @if(count($errors)>0)
@@ -68,6 +68,17 @@ INSERTAR REGISTROS
             </tr>
 
             <tr>
+                <td>Proveedores</td>
+                <td>
+                    <select name="proveedor_id" class="form-control">
+                        @foreach($proveedoresTable as $proveedor)
+                            <option value="{{$proveedor->id}}" {{old('proveedor_id')== $proveedor->id ? 'selected' :false}}>{{$proveedor->nombre}}</option>
+                        @endforeach
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
                 <td>Tipo cliente</td>
                 <td >
 
@@ -85,41 +96,31 @@ INSERTAR REGISTROS
                 <td>TipoFactura</td>
                 <td>
                     @foreach($tipos as $tipo)
-                        <input type="checkbox" name="tipofactura[]" value="{{$tipo->id}}">{{$tipo->nombre}}<br>
+                        <input type="checkbox" name="tipofactura[]" value="{{$tipo->id}}" class="{{ $errors->has('tipofactura')?'is-invalid':'' }}"
+                            @if (is_array(old('tipofactura')) && in_array($tipo->id,old('tipofactura')))
+                               checked
+                            @endif
+                        >{{$tipo->nombre}}<br>
+
                     @endforeach
+                        {{ csrf_field() }}<!--permite enviar datos sin login-->
+                        {!! $errors->first('tipofactura','<div class="invalid-feedback">:message</div>') !!}
                 </td>
             </tr>
+
             <tr>
                 <td>Tarifa</td>
                 <td>
                     @foreach($tarifasData as $tarifa)
-                        <input type="checkbox" name="tarifasArray[]" value="{{$tarifa->id}}">{{$tarifa->nombre}}
+                        <input type="checkbox" name="tarifasArray[]" value="{{$tarifa->id}}" class="{{ $errors->has('tarifasArray')?'is-invalid':'' }}"
+                            @if (is_array(old('tarifasArray')) && in_array($tarifa->id,old('tarifasArray')))
+                               checked
+                            @endif
+                        >{{$tarifa->nombre}}
                     @endforeach
+                        {!! $errors->first('tarifasArray','<div class="invalid-feedback">:message</div>') !!}
                 </td>
             </tr>
-
-
-
-
-
-            <tr>
-                <td>Factura:</td>
-                <td>
-                    <input type="checkbox" name="tipofacturas[]" value="electronica"
-                    @if (is_array(old('tipofactura')) && in_array('electronica',old('tipofactura')))
-                        checked
-                    @endif
-                    >Electronica<br>
-
-                    <input type="checkbox" name="tipofacturas[]" value="fisica"
-                    @if (is_array(old('tipofactura')) && in_array('fisica',old('tipofactura')))
-                        checked
-                    @endif
-                    >Fisica<br>
-                    {{ csrf_field() }}<!--permite enviar datos sin login-->
-                </td>
-            </tr>
-
 
 
             <tr>
@@ -137,6 +138,7 @@ INSERTAR REGISTROS
         </table>
 
     </form>
+   </div>
 
 
 @endsection

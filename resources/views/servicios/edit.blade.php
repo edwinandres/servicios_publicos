@@ -77,6 +77,17 @@ EDITAR REGISTROS
                     {{ csrf_field() }}<!--permite enviar datos sin login-->
                 </td>
             </tr>
+
+            <tr>
+                <td>Proveedores</td>
+                <td>
+                    <select name="proveedor_id" class="form-control">
+                        @foreach($proveedoresTable as $proveedor)
+                            <option value="{{$proveedor->id}}" {{old('proveedor_id')== $proveedor->id ? 'selected' :false}}>{{$proveedor->nombre}}</option>
+                        @endforeach
+                    </select>
+                </td>
+            </tr>
             <tr>
                 <td>Tipo cliente</td>
                 <td >
@@ -105,7 +116,7 @@ EDITAR REGISTROS
             </tr>
 
             <tr>
-                <td>TIPOFACTURA</td>
+                <td>Tipo Factura</td>
                 <td>
                     @foreach($tipos as $tipo)
                         <input type="checkbox" name="tipofactura[]" value="{{$tipo->id}}"
@@ -139,28 +150,6 @@ EDITAR REGISTROS
                 </td>
             </tr>
 
-
-
-
-            <tr>
-                <td>Factura:</td>
-                <td>
-                    <input type="checkbox" name="tipofactura[]" value="electronica"
-
-                    @if (is_array(old('tipofactura')) && in_array('electronica',old('tipofactura')))
-                        checked
-
-                    @endif
-                    >Electronica<br>
-
-                    <input type="checkbox" name="tipofactura[]" value="fisica"
-                    @if (is_array(old('tipofactura')) && in_array('fisica',old('tipofactura')))
-                        checked
-                    @endif
-                    >Fisica<br>
-                    {{ csrf_field() }}<!--permite enviar datos sin login-->
-                </td>
-            </tr>
 
             <tr>
                 <td colspan="" align="center">

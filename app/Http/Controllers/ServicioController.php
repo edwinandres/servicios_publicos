@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Proveedor;
 use App\Servicio;
 //use App\ServiciosPublico;
 use App\Tarifa;
@@ -37,14 +38,16 @@ class ServicioController extends Controller
         //
         $servicios = DB::table('servicios')
             ->join('zonas', 'zonas.id', '=', 'servicios.idzona')
-            ->select('servicios.*', 'zonas.nombre as nombrezona')
+            //->join('proveedors','proveedors.id','=','servicios.proveedor_id')
+            ->select('servicios.*', 'zonas.nombre as nombrezona')//, 'proveedors.nombre as nombreproveedor')
             ->orderBy('id')
             ->get();
 
         $tipofacturas = Tipofactura::all();
         $tarifasData = Tarifa::all();
+        $proveedoresTable = Proveedor::all();
 
-        return view('servicios.index', compact("servicios", "tipofacturas", "tarifasData"));//compact crea un array
+        return view('servicios.index', compact("servicios", "tipofacturas", "tarifasData","proveedoresTable"));//compact crea un array
 
         //$servicios = ServiciosPublico::all();
 
@@ -68,7 +71,8 @@ class ServicioController extends Controller
         $zonas = Zona::all();
         $tipos = Tipofactura::all();
         $tarifasData = Tarifa::all();
-        return view('servicios.create', compact("zonas","tipos","tarifasData"));
+        $proveedoresTable = Proveedor::all();
+        return view('servicios.create', compact("proveedoresTable","zonas","tipos","tarifasData"));
     }
 
     /**
@@ -88,7 +92,10 @@ class ServicioController extends Controller
             'idzona' => 'required',
             'tipocliente' => 'required',
             'tipofactura'=>'required',
-            'fechaenvio'=>'required|date|before:tomorrow|after:12/31/2019'
+            'fechaenvio'=>'required|date|before:tomorrow|after:12/31/2019',
+            'proveedor_id'=> 'required',
+            'tarifasArray'=> 'required',
+
         ];
 
         $mensaje=[
@@ -116,15 +123,17 @@ class ServicioController extends Controller
         $servicios->felectronica=$request->felectronica;
         $servicios->ffisica=$request->ffisica;
         $servicios->fechaenvio=$request->fechaenvio;
+        $servicios->proveedor_id=$request->proveedor_id;
 
         $servicios->save();
 
 
         $service= \App\Servicio::all();
         $data = Servicio::latest('id')->first();
+        $user= Servicio::all();
+        echo($user->last());
 
-        $servicios->save();
-
+        //GUARDADO EN TABLAS PIVOT
         foreach ($request['tipofactura'] as $tipof){
             Servicio::find($servicios->id)->tipofacturas()->attach($tipof);
         }
@@ -160,8 +169,9 @@ class ServicioController extends Controller
         $tipos=Tipofactura::all();
         $zona= Zona::all();
         $tarifasData = Tarifa::all();
+        $proveedoresTable = Proveedor::all();
         $servicio=Servicio::findOrFail($id);
-        return view("servicios.edit", compact("servicio","zona", "tipos","tarifasData"));
+        return view("servicios.edit", compact("servicio","zona", "tipos","tarifasData","proveedoresTable"));
     }
 
     /**
@@ -181,7 +191,8 @@ class ServicioController extends Controller
             'tipocliente' => 'required',
             //'fechaprueba'=>'required|date|before:tomorrow|after:12/31/2019',
             'fechaenvio'=>'required|date|before:tomorrow|after:12/31/2019',
-            'tipofactura'=>'required'
+            'tipofactura'=>'required',
+            'proveedor_id'=>'required'
         ];
         $mensaje=[
             "required"=>':attribute es requerido',
@@ -207,6 +218,7 @@ class ServicioController extends Controller
         $servicio->felectronica = $request->felectronica;
         $servicio->ffisica = $request->ffisica;
         $servicio->fechaenvio = $request->fechaenvio;
+        $servicio->proveedor_id = $request->proveedor_id;
 
         $servicio->update($request->all());
 

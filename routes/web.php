@@ -51,7 +51,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //Route::delete('/servicios/{id}', 'ServiciosPublicosController@destroy')->name('servicios.destroy');
 
-
+//RUTAS PARA SERVICIO
 Route::get('/servicios/index', 'ServicioController@index')->name('servicios.index');
 
 Route::get('/servicios/{id}/edit', 'ServicioController@edit')->name('servicios.edit');
@@ -63,6 +63,20 @@ Route::patch('/servicios/{id}', 'ServicioController@update')->name('servicios.up
 Route::post('/servicios', 'ServicioController@store')->name('servicios.store');
 
 Route::delete('/servicios/{id}', 'ServicioController@destroy')->name('servicios.destroy');
+
+
+//RUTAS PARA PROVEEDOR
+Route::get('/proveedores/index', 'ProveedorController@index')->name('proveedores.index');
+
+Route::get('/proveedores/{id}/edit', 'ProveedorController@edit')->name('proveedores.edit');
+
+Route::get('/proveedores/create', 'ProveedorController@create')->name('proveedores.create');
+
+Route::patch('/proveedores/{id}', 'ProveedorController@update')->name('proveedores.update');
+
+Route::post('/proveedores', 'ProveedorController@store')->name('proveedores.store');
+
+Route::delete('/proveedores/{id}', 'ProveedorController@destroy')->name('proveedores.destroy');
 
 
 
